@@ -10,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,32 +31,21 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val context = LocalContext.current
                     Column {
-                        Greeting()  
+                        val coroutineScope = rememberCoroutineScope()
                         Button(onClick = {
-                            val uri =
-                                Uri.parse("assets/umowa.pdf")
-                            val config = PdfActivityConfiguration.Builder(context).build()
-                            PdfActivity.showDocument(context, uri, config)
+                            coroutineScope.launch {
+                                PSPDFKit.initialize(context, null)
+                                val uri =
+                                    Uri.parse("assets/umowa.pdf")
+                                val config = PdfActivityConfiguration.Builder(context).build()
+                                PdfActivity.showDocument(context, uri, config)
+                            }
                         }) {
-                            Text(text = "launch")
+                            Text(text = "init")
                         }
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting() {
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-    Button(onClick = {
-        coroutineScope.launch {
-            PSPDFKit.initialize(context, null)
-        }
-    }) {
-        Text(text = "init")
-    }
-
 }
